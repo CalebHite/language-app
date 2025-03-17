@@ -1,5 +1,5 @@
 import { getAllEntries } from "@/lib/fauna";
-import GuestbookPage from "./guestbook-page";
+import { SessionProvider } from "next-auth/react"
 
 
 export default async function Page() {
