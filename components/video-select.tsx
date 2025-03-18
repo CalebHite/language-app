@@ -13,9 +13,11 @@ interface VideoSelectProps {
     youtubeLink: string
     videoFile: File | null
   }
+  onClipChange: (start: number, end: number) => void
+  targetLang: string
 }
 
-export default function VideoSelect({ videoData }: VideoSelectProps) {
+export default function VideoSelect({ videoData, onClipChange, targetLang }: VideoSelectProps) {
   const playerRef = useRef<ReactPlayer>(null)
   const [isPlaying, setIsPlaying] = useState(true)
   const [currentTime, setCurrentTime] = useState(0)
@@ -46,6 +48,10 @@ export default function VideoSelect({ videoData }: VideoSelectProps) {
       playerRef.current?.seekTo(clipStart, "seconds")
     }
   }, [currentTime, clipEnd, clipStart, isPlaying])
+
+  useEffect(() => {
+    onClipChange(clipStart, clipEnd)
+  }, [clipStart, clipEnd, onClipChange])
 
   const togglePlay = () => {
     setIsPlaying(!isPlaying)
@@ -137,6 +143,29 @@ export default function VideoSelect({ videoData }: VideoSelectProps) {
 
   const isMaxLengthReached = () => {
     return clipEnd - clipStart >= MAX_CLIP_LENGTH
+  }
+
+  const handleSelectClip = async () => {
+    const source_url = videoSrc
+    const start_time = clipStart.toFixed(2)
+    const end_time = clipEnd.toFixed(2)
+
+    const url = new URL('http://localhost:3001/api/request-dub')
+    url.searchParams.append('source_url', source_url)
+    url.searchParams.append('target_lang', targetLang)
+    url.searchParams.append('start_time', start_time)
+    url.searchParams.append('end_time', end_time)
+
+    try {
+      const response = await fetch(url.toString())
+      if (!response.ok) {
+        throw new Error('Network response was not ok')
+      }
+      const data = await response.json()
+      console.log('Response data:', data)
+    } catch (error) {
+      console.error('Error fetching data:', error)
+    }
   }
 
   return (
@@ -278,16 +307,14 @@ export default function VideoSelect({ videoData }: VideoSelectProps) {
               Clip: {formatTime(clipStart)} - {formatTime(clipEnd)} ({formatTime(clipEnd - clipStart)})
               {isMaxLengthReached() && <span className="ml-2 text-yellow-400">Max length</span>}
             </div>
-
             <Button size="icon" variant="ghost" className="text-white hover:bg-white/10 ml-2">
               <Maximize className="h-5 w-5" />
             </Button>
           </div>
         </div>
       </div>
-      <Button className="mt-10 text-xl p-6 text-white bg-blue-600 hover:bg-blue-700">Select Clip</Button>
+      <Button className="mt-10 text-xl p-6 text-white bg-blue-600 hover:bg-blue-700" onClick={handleSelectClip}>Select Clip</Button>
     </div>
-    // Add logic into Select Clip button to start dub using API
   )
 }
 

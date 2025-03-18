@@ -14,7 +14,7 @@ export default function LoginBtn() {
   }
   return (
     <div className="flex justify-center items-center min-h-screen">
-      <Button onClick={() => signIn()} className="bg-blue-500 hover:bg-blue-600 text-lg text-white">
+      <Button onClick={() => signIn()} className="bg-blue-600 hover:bg-blue-700 text-lg text-white">
         Login
       </Button>
     </div>

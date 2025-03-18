@@ -29,6 +29,10 @@ export default function Home() {
     setVideoData({ youtubeLink, videoFile });
   };
 
+  const handleClipChange = (start: number, end: number) => {
+    console.log(`Clip Start: ${start} seconds, Clip End: ${end} seconds`);
+  };
+
   if (!session) {
     return (
       <div>
@@ -43,7 +47,7 @@ export default function Home() {
       {!isSubmitted ? (
         <VideoSubmit onVideoDataChange={handleVideoDataChange} setIsSubmitted={setIsSubmitted} />
       ) : (
-        <VideoSelect videoData={videoData} />
+        <VideoSelect videoData={videoData} onClipChange={handleClipChange} targetLang="en" />
       )}
     </div>
   );
