@@ -1,6 +1,7 @@
+"use client";
 import { useSession, signIn, signOut } from "next-auth/react"
 
-export default function Component() {
+export default function LoginBtn() {
   const { data: session } = useSession()
   if (session && session.user) {
     return (
@@ -12,8 +13,7 @@ export default function Component() {
   }
   return (
     <>
-      Not signed in <br />
-      <button onClick={() => signIn()}>Sign in</button>
+      <button className="p-2 px-6 bg-blue-600 text-white rounded-full" onClick={() => signIn()}>Sign in</button>
     </>
   )
 }

@@ -1,15 +1,38 @@
-import NextAuth from "next-auth"
-import EmailProvider from "next-auth/providers/email"
+import NextAuth from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
+import { FaunaAdapter } from "@next-auth/fauna-adapter";
+import { Client } from "faunadb";
 
-const handler = NextAuth({
-    providers: [
-        EmailProvider({
-          server: process.env.EMAIL_SERVER,
-          from: process.env.EMAIL_FROM,
-          // maxAge: 24 * 60 * 60, // How long email links are valid for (default 24h)
-        }),
-    ],
-  // Add other configuration options as needed
-})
+const client = new Client({
+  secret: process.env.FAUNA_SECRET || "",
+});
 
-export { handler as GET, handler as POST }
+const authOptions = {
+  providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID || "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+    }),
+  ],
+  adapter: FaunaAdapter(client),
+  session: {
+    strategy: "jwt" as const,
+  },
+  debug: true, // Enable debugging for better error logs
+};
+
+// Export named functions for each HTTP method
+export const GET = NextAuth({
+  providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+  ],
+});
+
+export async function POST(req, res) {
+  return NextAuth(req, res, authOptions);
+}
+
+export { authOptions };
