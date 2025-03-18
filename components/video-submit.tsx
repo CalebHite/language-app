@@ -11,29 +11,33 @@ import { Toaster } from "@/components/ui/sonner"
 import { Upload } from "lucide-react"
 
 interface VideoSubmitProps {
-  onVideoDataChange: (youtubeLink: string, videoFile: File | null) => void
+  onVideoDataChange: (youtubeLink: string, videoFile: File | null) => void;
+  setIsSubmitted: (submitted: boolean) => void; // New prop
 }
 
-export default function VideoSubmitForm({ onVideoDataChange }: VideoSubmitProps) {
-  const [youtubeLink, setYoutubeLink] = useState("")
-  const [videoFile, setVideoFile] = useState<File | null>(null)
+export default function VideoSubmitForm({ onVideoDataChange, setIsSubmitted }: VideoSubmitProps) {
+  const [youtubeLink, setYoutubeLink] = useState("");
+  const [videoFile, setVideoFile] = useState<File | null>(null);
 
   const handleLinkChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const link = event.target.value
-    setYoutubeLink(link)
-    onVideoDataChange(link, videoFile)
-  }
+    const link = event.target.value;
+    setYoutubeLink(link);
+    onVideoDataChange(link, videoFile);
+  };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files ? event.target.files[0] : null
-    setVideoFile(file)
-    onVideoDataChange(youtubeLink, file)
-  }
+    const file = event.target.files ? event.target.files[0] : null;
+    setVideoFile(file);
+    onVideoDataChange(youtubeLink, file);
+  };
 
   const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault()
-    console.log("Form submitted with:", { youtubeLink, videoFile })
-  }
+    event.preventDefault();
+    console.log("Form submitted with:", { youtubeLink, videoFile });
+    
+    // Mark the form as submitted
+    setIsSubmitted(true);
+  };
 
   return (
     <Card className="w-full max-w-md mx-auto">
@@ -82,6 +86,7 @@ export default function VideoSubmitForm({ onVideoDataChange }: VideoSubmitProps)
         </Button>
       </CardFooter>
     </Card>
-  )
+  );
 }
+
 

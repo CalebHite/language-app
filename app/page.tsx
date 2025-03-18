@@ -3,11 +3,18 @@
 import { getSession } from "next-auth/react";
 import LoginBtn from "../components/login-btn";
 import VideoSubmit from "@/components/video-submit";
+import VideoSelect from "@/components/video-select";
 import { useEffect, useState } from 'react';
 
+interface VideoData {
+  youtubeLink: string;
+  videoFile: File | null;
+}
+
 export default function Home() {
-  const [session, setSession] = useState(null);
-  const [videoData, setVideoData] = useState({ youtubeLink: '', videoFile: null });
+  const [session, setSession] = useState<any>(null); // Use 'any' or a more specific type if available
+  const [videoData, setVideoData] = useState<VideoData>({ youtubeLink: '', videoFile: null });
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   useEffect(() => {
     const fetchSession = async () => {
@@ -33,7 +40,11 @@ export default function Home() {
   return (
     <div className="text-center">
       <h1 className="text-4xl my-16 font-bold">Welcome, {session.user?.name}!</h1>
-      <VideoSubmit onVideoDataChange={handleVideoDataChange} />
+      {!isSubmitted ? (
+        <VideoSubmit onVideoDataChange={handleVideoDataChange} setIsSubmitted={setIsSubmitted} />
+      ) : (
+        <VideoSelect videoData={videoData} />
+      )}
     </div>
   );
 }
