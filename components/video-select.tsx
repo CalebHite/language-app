@@ -146,25 +146,26 @@ export default function VideoSelect({ videoData, onClipChange, targetLang }: Vid
   }
 
   const handleSelectClip = async () => {
-    const source_url = videoSrc
-    const start_time = clipStart.toFixed(2)
-    const end_time = clipEnd.toFixed(2)
+    const source_url = videoSrc;
+    const start_time = Math.floor(clipStart);
+    const end_time = Math.floor(clipEnd);
 
-    const url = new URL('http://localhost:3001/api/request-dub')
-    url.searchParams.append('source_url', source_url)
-    url.searchParams.append('target_lang', targetLang)
-    url.searchParams.append('start_time', start_time)
-    url.searchParams.append('end_time', end_time)
+    const url = new URL('http://localhost:3001/api/request-dub');
+    url.searchParams.append('source_url', source_url);
+    url.searchParams.append('target_lang', targetLang);
+    url.searchParams.append('start_time', start_time.toString());
+    url.searchParams.append('end_time', end_time.toString());
+    console.log(url);
 
     try {
-      const response = await fetch(url.toString())
+      const response = await fetch(url.toString());
       if (!response.ok) {
-        throw new Error('Network response was not ok')
+        throw new Error('Network response was not ok');
       }
-      const data = await response.json()
-      console.log('Response data:', data)
+      const data = await response.json();
+      console.log('Response data:', data);
     } catch (error) {
-      console.error('Error fetching data:', error)
+      console.error('Error fetching data:', error);
     }
   }
 

@@ -15,7 +15,8 @@ export default function Home() {
   const [session, setSession] = useState<any>(null); // Use 'any' or a more specific type if available
   const [videoData, setVideoData] = useState<VideoData>({ youtubeLink: '', videoFile: null });
   const [isSubmitted, setIsSubmitted] = useState(false);
-
+  const [targetLang, setTargetLang] = useState("en");
+  
   useEffect(() => {
     const fetchSession = async () => {
       const userSession = await getSession();
@@ -47,7 +48,7 @@ export default function Home() {
       {!isSubmitted ? (
         <VideoSubmit onVideoDataChange={handleVideoDataChange} setIsSubmitted={setIsSubmitted} />
       ) : (
-        <VideoSelect videoData={videoData} onClipChange={handleClipChange} targetLang="en" />
+        <VideoSelect videoData={videoData} onClipChange={handleClipChange} targetLang={targetLang} />
       )}
     </div>
   );
