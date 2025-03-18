@@ -18,7 +18,6 @@ const authOptions = {
   session: {
     strategy: "jwt" as const,
   },
-  debug: true, // Enable debugging for better error logs
 };
 
 // Export named functions for each HTTP method

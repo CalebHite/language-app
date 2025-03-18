@@ -1,21 +1,39 @@
-import { SessionProvider } from "next-auth/react"
-import { AppProps } from "next/app"
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import LoginBtn from "../components/login-btn";
+"use client";
 
-export default async function Home() {
-  const session = await getServerSession(authOptions);
+import { getSession } from "next-auth/react";
+import LoginBtn from "../components/login-btn";
+import VideoSubmit from "@/components/video-submit";
+import { useEffect, useState } from 'react';
+
+export default function Home() {
+  const [session, setSession] = useState(null);
+  const [videoData, setVideoData] = useState({ youtubeLink: '', videoFile: null });
+
+  useEffect(() => {
+    const fetchSession = async () => {
+      const userSession = await getSession();
+      setSession(userSession);
+    };
+
+    fetchSession();
+  }, []);
+
+  const handleVideoDataChange = (youtubeLink: string, videoFile: File | null) => {
+    setVideoData({ youtubeLink, videoFile });
+  };
 
   if (!session) {
     return (
       <div>
-        <h1>Please sign in to view this page.</h1>
         <LoginBtn />
       </div>
     );
   }
-  else if (session.user){
-    return <div>Welcome to the home page, {session.user.name}!</div>;
-  }
+
+  return (
+    <div className="text-center">
+      <h1 className="text-4xl my-16 font-bold">Welcome, {session.user?.name}!</h1>
+      <VideoSubmit onVideoDataChange={handleVideoDataChange} />
+    </div>
+  );
 }

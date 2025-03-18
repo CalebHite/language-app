@@ -1,5 +1,6 @@
 "use client";
 import { useSession, signIn, signOut } from "next-auth/react"
+import { Button } from "@/components/ui/button";
 
 export default function LoginBtn() {
   const { data: session } = useSession()
@@ -12,8 +13,10 @@ export default function LoginBtn() {
     )
   }
   return (
-    <>
-      <button className="p-2 px-6 bg-blue-600 text-white rounded-full" onClick={() => signIn()}>Sign in</button>
-    </>
+    <div className="flex justify-center items-center min-h-screen">
+      <Button onClick={() => signIn()} className="bg-blue-500 hover:bg-blue-600 text-lg text-white">
+        Login
+      </Button>
+    </div>
   )
 }
