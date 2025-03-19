@@ -15,8 +15,8 @@ export default function Home() {
   const [session, setSession] = useState<any>(null); // Use 'any' or a more specific type if available
   const [videoData, setVideoData] = useState<VideoData>({ youtubeLink: '', videoFile: null });
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [targetLang, setTargetLang] = useState("en");
-  
+  const [targetLang, setTargetLang] = useState("de");
+
   useEffect(() => {
     const fetchSession = async () => {
       const userSession = await getSession();
