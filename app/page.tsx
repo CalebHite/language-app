@@ -4,6 +4,7 @@ import { getSession } from "next-auth/react";
 import LoginBtn from "../components/login-btn";
 import VideoSubmit from "@/components/video-submit";
 import VideoSelect from "@/components/video-select";
+import VideoLibrary from "@/components/video-library";
 import { useEffect, useState } from 'react';
 
 interface VideoData {
@@ -50,6 +51,7 @@ export default function Home() {
       ) : (
         <VideoSelect videoData={videoData} onClipChange={handleClipChange} targetLang={targetLang} />
       )}
+      <VideoLibrary />
     </div>
   );
 }
