@@ -77,7 +77,12 @@ export default function Home() {
         return !isSubmitted ? (
           <VideoSubmit onVideoDataChange={handleVideoDataChange} setIsSubmitted={setIsSubmitted} />
         ) : (
-          <VideoSelect videoData={videoData} onClipChange={handleClipChange} targetLang={targetLang} />
+          <VideoSelect 
+            videoData={videoData} 
+            onClipChange={handleClipChange} 
+            targetLang={targetLang} 
+            onSelectClip={() => setActiveTab("watch")}
+          />
         )
       case "learn":
         return <div>Learn Content Here</div>
@@ -99,17 +104,19 @@ export default function Home() {
   return (
     <div className="text-center">
       <div className="flex justify-between items-center px-4 py-2">
-          <Avatar className="w-16 h-16 m-8 cursor-pointer">
+          <div className="flex flex-col m-8">
+          <Avatar className="w-16 h-16 mb-2 cursor-pointer">
             <AvatarImage src={sessionData?.user?.image} />
             <AvatarFallback>
               <img src="/static/backup-avatar.png" alt="User Avatar" />
             </AvatarFallback>
           </Avatar> 
-          <div className="flex flex-col items-end">
-          <LanguageSelector targetLang={targetLang} changeLanguage={changeLanguage} isUpdatingLang={isUpdatingLang} />
-          <Button variant="outline" size="sm" onClick={() => signOut()}>
+          <Button variant="ghost" size="sm" onClick={() => signOut()}>
             Sign out
           </Button>
+          </div>
+          <div className="">
+          <LanguageSelector targetLang={targetLang} changeLanguage={changeLanguage} isUpdatingLang={isUpdatingLang} />
         </div>
       </div>
 

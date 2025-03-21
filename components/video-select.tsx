@@ -15,9 +15,10 @@ interface VideoSelectProps {
   }
   onClipChange: (start: number, end: number) => void
   targetLang: string
+  onSelectClip: () => void
 }
 
-export default function VideoSelect({ videoData, onClipChange, targetLang }: VideoSelectProps) {
+export default function VideoSelect({ videoData, onClipChange, targetLang, onSelectClip }: VideoSelectProps) {
   const playerRef = useRef<ReactPlayer>(null)
   const [isPlaying, setIsPlaying] = useState(true)
   const [currentTime, setCurrentTime] = useState(0)
@@ -164,6 +165,7 @@ export default function VideoSelect({ videoData, onClipChange, targetLang }: Vid
       }
       const data = await response.json();
       console.log('Response data:', data);
+      onSelectClip();
     } catch (error) {
       console.error('Error fetching data:', error);
     }
