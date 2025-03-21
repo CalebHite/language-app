@@ -8,6 +8,8 @@ import VideoLibrary from "@/components/video-library"
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { LanguageSelector } from "@/components/language-selector"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+
 
 interface VideoData {
   youtubeLink: string
@@ -97,8 +99,11 @@ export default function Home() {
   return (
     <div className="text-center">
       <div className="flex justify-between items-center px-4 py-2">
-        <h1 className="text-4xl my-8 font-bold">Welcome, {session.user?.name}!</h1>
-        <div className="flex flex-col items-end">
+          <Avatar className="w-16 h-16 m-8 cursor-pointer">
+            <AvatarImage src="https://github.com/shadcn.png" />
+            <AvatarFallback className="bg-black text-white">{sessionData.user?.name}</AvatarFallback>
+          </Avatar> 
+          <div className="flex flex-col items-end">
           <LanguageSelector targetLang={targetLang} changeLanguage={changeLanguage} isUpdatingLang={isUpdatingLang} />
           <Button variant="outline" size="sm" onClick={() => signOut()}>
             Sign out
