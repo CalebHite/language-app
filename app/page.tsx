@@ -100,8 +100,10 @@ export default function Home() {
     <div className="text-center">
       <div className="flex justify-between items-center px-4 py-2">
           <Avatar className="w-16 h-16 m-8 cursor-pointer">
-            <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback className="bg-black text-white">{sessionData.user?.name}</AvatarFallback>
+            <AvatarImage src={sessionData?.user?.image} />
+            <AvatarFallback>
+              <img src="/static/backup-avatar.png" alt="User Avatar" />
+            </AvatarFallback>
           </Avatar> 
           <div className="flex flex-col items-end">
           <LanguageSelector targetLang={targetLang} changeLanguage={changeLanguage} isUpdatingLang={isUpdatingLang} />
