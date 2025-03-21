@@ -7,11 +7,10 @@ import { Slider } from "@/components/ui/slider"
 import { Play, Pause, Volume2, VolumeX, Maximize, Minimize, SkipForward, SkipBack } from "lucide-react"
 
 interface VideoPlayerProps {
-  dubbing_id: string
-  target_lang: string
+  video_url: string;
 }
 
-const VideoPlayer = ({ dubbing_id, target_lang }: VideoPlayerProps) => {
+const VideoPlayer = ({ video_url }: VideoPlayerProps) => {
   const playerRef = useRef<ReactPlayer>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const [isPlaying, setIsPlaying] = useState(true)
@@ -124,8 +123,6 @@ const VideoPlayer = ({ dubbing_id, target_lang }: VideoPlayerProps) => {
     }
   }, [])
 
-  const videoUrl = "https://www.youtube.com/watch?v=E6ZW1hMYDW0&ab_channel=SportsOnPrime"
-
   return (
     <div
       ref={containerRef}
@@ -135,7 +132,7 @@ const VideoPlayer = ({ dubbing_id, target_lang }: VideoPlayerProps) => {
     >
       <ReactPlayer
         ref={playerRef}
-        url={videoUrl}
+        url={video_url}
         playing={isPlaying}
         volume={volume}
         muted={isMuted}

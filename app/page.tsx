@@ -52,7 +52,8 @@ export default function Home() {
       ) : (
         <VideoSelect videoData={videoData} onClipChange={handleClipChange} targetLang={targetLang} />
       )}
-      <VideoPlayer dubbing_id='fGR8Q8YYA0d0XMgBJSTO' target_lang='de' />
+      <VideoLibrary target_lang='de' />
+      <VideoPlayer video_url='https://www.youtube.com/watch?v=E6ZW1hMYDW0&ab_channel=SportsOnPrime' />
     </div>
   );
 }
