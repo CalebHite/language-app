@@ -126,7 +126,7 @@ const VideoPlayer = ({ video_url }: VideoPlayerProps) => {
   return (
     <div
       ref={containerRef}
-      className="relative w-full max-w-[53rem] mx-auto overflow-hidden rounded-lg bg-black aspect-video"
+      className="relative w-full  mx-auto overflow-hidden rounded-lg bg-black aspect-video"
       onMouseMove={handleMouseMove}
       onMouseLeave={() => isPlaying && setShowControls(false)}
     >
