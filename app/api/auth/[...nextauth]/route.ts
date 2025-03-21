@@ -1,37 +1,46 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import { FaunaAdapter } from "@next-auth/fauna-adapter";
-import { Client } from "faunadb";
 
-const client = new Client({
-  secret: process.env.FAUNA_SECRET || "",
-});
-
-const authOptions = {
+export const authOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
     }),
   ],
-  adapter: FaunaAdapter(client),
   session: {
-    strategy: "jwt" as const,
+    strategy: "jwt",
   },
+  callbacks: {
+    async session({ session, token }) {
+      // Add target_lang to the session with default value "en"
+      session.target_lang = token.target_lang || "de";
+      return session;
+    },
+    async jwt({ token, user, trigger, session }) {
+      // Initialize target_lang when token is first created
+      if (user) {
+        token.target_lang = "en";
+      }
+      
+      // Handle updates when session is updated
+      if (trigger === "update" && session?.target_lang) {
+        token.target_lang = session.target_lang;
+      }
+
+      // Save target_lang even after logout
+      if (!user) {
+        token.target_lang = token.target_lang || "de"; // Retain the value
+      }
+      
+      return token;
+    }
+  },
+  debug: process.env.NODE_ENV === "development",
 };
 
-// Export named functions for each HTTP method
-export const GET = NextAuth({
-  providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    }),
-  ],
-});
+// Create handler
+const handler = NextAuth(authOptions);
 
-export async function POST(req, res) {
-  return NextAuth(req, res, authOptions);
-}
-
-export { authOptions };
+// Export route handlers
+export { handler as GET, handler as POST };
