@@ -1,14 +1,15 @@
 "use client"
 
-import { getSession, useSession, signOut } from "next-auth/react"
-import LoginBtn from "../components/login-btn"
-import VideoSubmit from "@/components/video-submit"
-import VideoSelect from "@/components/video-select"
-import VideoLibrary from "@/components/video-library"
-import { useEffect, useState } from "react"
-import { Button } from "@/components/ui/button"
-import { LanguageSelector } from "@/components/language-selector"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { getSession, useSession, signOut } from "next-auth/react";
+import LoginBtn from "../components/login-btn";
+import VideoSubmit from "@/components/video-submit";
+import VideoSelect from "@/components/video-select";
+import VideoLibrary from "@/components/video-library";
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { LanguageSelector } from "@/components/language-selector";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import MyProfile from "../components/my-profile";
 
 
 interface VideoData {
@@ -24,16 +25,16 @@ export default function Home() {
   const [targetLang, setTargetLang] = useState("de")
   const [activeTab, setActiveTab] = useState("watch")
   const [isUpdatingLang, setIsUpdatingLang] = useState(false)
+  const [isProfileVisible, setIsProfileVisible] = useState(false)
+
+  
 
   useEffect(() => {
-    const fetchSession = async () => {
-      const userSession = await getSession()
-      setSession(userSession)
-      setTargetLang(userSession?.target_lang || "en")
+    // Use the sessionData from useSession instead of fetching a separate session
+    if (sessionData) {
+      setTargetLang(sessionData.target_lang || "en");
     }
-
-    fetchSession()
-  }, [])
+  }, [sessionData]);
 
   const handleVideoDataChange = (youtubeLink: string, videoFile: File | null) => {
     setVideoData({ youtubeLink, videoFile })
@@ -45,30 +46,22 @@ export default function Home() {
 
   // Language change handler
   const changeLanguage = async (newLang: string) => {
-    if (!session) return
-
-    setIsUpdatingLang(true)
-
+    setIsUpdatingLang(true);
+    
     try {
-      // Update the session with the new target language
       await updateSession({
         target_lang: newLang,
-      })
-
-      // Update local state
-      setTargetLang(newLang)
-
-      // Refetch session to get updated data
-      const updatedSession = await getSession()
-      setSession(updatedSession)
-
-      console.log(`Language changed to: ${newLang}`)
+      });
+      
+      // Local state will be updated via the useEffect when sessionData changes
     } catch (error) {
-      console.error("Failed to update language:", error)
+      console.error("Failed to update language:", error);
+      // Fallback: update local state directly if the session update fails
+      setTargetLang(newLang);
     } finally {
-      setIsUpdatingLang(false)
+      setIsUpdatingLang(false);
     }
-  }
+  };
 
   // Function to render content based on the active tab
   const renderContent = () => {
@@ -93,7 +86,12 @@ export default function Home() {
     }
   }
 
-  if (!session) {
+  // Function to toggle profile visibility
+  const toggleProfileVisibility = () => {
+    setIsProfileVisible(prev => !prev);
+  };
+
+  if (!sessionData) {
     return (
       <div>
         <LoginBtn />
@@ -103,19 +101,25 @@ export default function Home() {
 
   return (
     <div className="text-center">
+      {isProfileVisible && <MyProfile onClose={toggleProfileVisibility} />}
       <div className="flex justify-between items-center px-4 py-2">
-          <div className="flex flex-col m-8">
-          <Avatar className="w-16 h-16 mb-2 cursor-pointer">
-            <AvatarImage src={sessionData?.user?.image} />
-            <AvatarFallback>
-              <img src="/static/backup-avatar.png" alt="User Avatar" />
-            </AvatarFallback>
-          </Avatar> 
+        <div className="flex flex-col m-8">
+          <div 
+            className="cursor-pointer" 
+            onClick={toggleProfileVisibility}
+          >
+            <Avatar className="w-16 h-16 mb-2">
+              <AvatarImage src={sessionData?.user?.image} />
+              <AvatarFallback>
+                <img src="/static/backup-avatar.png" alt="User Avatar" />
+              </AvatarFallback>
+            </Avatar>
+          </div>
           <Button variant="ghost" size="sm" onClick={() => signOut()}>
             Sign out
           </Button>
-          </div>
-          <div className="">
+        </div>
+        <div className="">
           <LanguageSelector targetLang={targetLang} changeLanguage={changeLanguage} isUpdatingLang={isUpdatingLang} />
         </div>
       </div>
