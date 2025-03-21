@@ -5,6 +5,7 @@ import ReactPlayer from "react-player"
 import { Button } from "@/components/ui/button"
 import { Slider } from "@/components/ui/slider"
 import { Play, Pause, Volume2, VolumeX, Maximize, Minimize, SkipForward, SkipBack } from "lucide-react"
+import Subtitles from "./subtitles"
 
 interface VideoPlayerProps {
   video_url: string;
