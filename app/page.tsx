@@ -33,8 +33,32 @@ export default function Home() {
     // Use the sessionData from useSession instead of fetching a separate session
     if (sessionData) {
       setTargetLang(sessionData.target_lang || "en");
+      // Create user in IPFS when they log in
+      createUserInIPFS(sessionData.user.id, sessionData.user.name, sessionData.user.email, sessionData.target_lang);
     }
   }, [sessionData]);
+
+  // Function to create user in IPFS
+  const createUserInIPFS = async (userId: string, name: string, email: string, target_lang: string) => {
+    try {
+      const response = await fetch('http://localhost:3001/api/create-user', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId, name, email, target_lang }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create user in IPFS');
+      }
+
+      const data = await response.json();
+      console.log('User created in IPFS:', data.ipfsUrl);
+    } catch (error) {
+      console.error('Error creating user in IPFS:', error);
+    }
+  };
 
   const handleVideoDataChange = (youtubeLink: string, videoFile: File | null) => {
     setVideoData({ youtubeLink, videoFile })
@@ -53,13 +77,35 @@ export default function Home() {
         target_lang: newLang,
       });
       
-      // Local state will be updated via the useEffect when sessionData changes
+      // Update user in IPFS when language changes
+      await updateUserInIPFS(sessionData.user.id, { target_lang: newLang });
     } catch (error) {
       console.error("Failed to update language:", error);
-      // Fallback: update local state directly if the session update fails
       setTargetLang(newLang);
     } finally {
       setIsUpdatingLang(false);
+    }
+  };
+
+  // Function to update user in IPFS
+  const updateUserInIPFS = async (userId: string, updatedData: { target_lang: string }) => {
+    try {
+      const response = await fetch(`http://localhost:3001/api/update-user/${userId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update user in IPFS');
+      }
+
+      const data = await response.json();
+      console.log('User updated in IPFS:', data.ipfsUrl);
+    } catch (error) {
+      console.error('Error updating user in IPFS:', error);
     }
   };
 
